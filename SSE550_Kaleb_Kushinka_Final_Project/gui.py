@@ -2,7 +2,7 @@ import tkinter as tk
 from PIL import Image, ImageTk
 from tkinter import  messagebox
 from tkcalendar import Calendar
-from datetime import datetime
+import datetime
 from scheduler import Scheduler
 from appointment import Appointment
 
@@ -11,6 +11,9 @@ class AppointmentApp:
         self.master = master
         self.scheduler = Scheduler()  # Assuming you have a Scheduler class
         master.title("Dentist Appointment Scheduler")
+
+        # Initialize the appointment_widgets attribute
+        self.appointment_widgets = []
 
         # Welcome message label
         self.welcome_label = tk.Label(master, text="Welcome to the Dental Scheduler", font=("Arial", 16))
@@ -48,13 +51,15 @@ class AppointmentApp:
         self.patient_name_entry = tk.Entry(self.schedule_window)
         self.patient_name_entry.pack()
 
+        tk.Label(self.schedule_window, text="Appointment Type:").pack()
+        self.doctor_entry = tk.Entry(self.schedule_window)
+        self.doctor_entry.pack()
+
         tk.Label(self.schedule_window, text="Doctor:").pack()
         self.appointment_type_entry = tk.Entry(self.schedule_window)
         self.appointment_type_entry.pack()
 
-        tk.Label(self.schedule_window, text="Appointment Type:").pack()
-        self.doctor_entry = tk.Entry(self.schedule_window)
-        self.doctor_entry.pack()
+        
 
         # Schedule button
         self.schedule_button = tk.Button(self.schedule_window, text="Schedule", command=self.schedule_appointment)
@@ -66,7 +71,7 @@ class AppointmentApp:
         time_str = self.time_entry.get()
         patient_name = self.patient_name_entry.get()
         appointment_type = self.appointment_type_entry.get()
-        doctor = self.doctor_entry.get()
+        doctor_name = self.doctor_entry.get()
 
         # Convert date and time
         try:
@@ -77,7 +82,7 @@ class AppointmentApp:
             return
 
         # Create appointment object
-        appointment = Appointment(None, date, time, patient_name, appointment_type, doctor)
+        appointment = Appointment(None, date, time, patient_name, appointment_type, doctor_name)
         
         # Check for conflicts and schedule if no conflict
         result = self.scheduler.add_appointment(appointment)
@@ -91,8 +96,8 @@ class AppointmentApp:
 
         # Drop-down menu for choosing filter type
         self.filter_var = tk.StringVar(self.view_window)
-        self.filter_var.set("doctor")  # default value
-        self.filter_option_menu = tk.OptionMenu(self.view_window, self.filter_var, "doctor", "date", "type", "name")
+        self.filter_var.set("doctor_name")  # default value
+        self.filter_option_menu = tk.OptionMenu(self.view_window, self.filter_var, "doctor_name", "date", "appointment_type", "patient_name")
         self.filter_option_menu.pack()
 
         # Entry field for filter value
@@ -131,15 +136,22 @@ class AppointmentApp:
     def schedule_appointment_from_calendar(self):
         selected_date = self.calendar.get_date()
         # Convert the selected_date to a suitable format if necessary
+        try:
+            date_obj = datetime.datetime.strptime(selected_date, '%m/%d/%y').date()
+            formatted_date = date_obj.strftime('%Y-%m-%d')
+        except ValueError:
+            messagebox.showerror("Error", "Invalid date format")
+            return
 
         self.schedule_window = tk.Toplevel(self.master)
         self.schedule_window.title("Schedule Appointment")
 
-        # Date label and entry (pre-filled with selected date)
+        # Date label and entry (pre-filled with formatted date)
         tk.Label(self.schedule_window, text="Date:").pack()
         self.date_entry = tk.Entry(self.schedule_window)
-        self.date_entry.insert(0, selected_date)  # Pre-fill with the selected date
+        self.date_entry.insert(0, formatted_date)  # Pre-fill with the formatted date
         self.date_entry.pack()
+
 
         # Time entry
         tk.Label(self.schedule_window, text="Time (HH:MM):").pack()
@@ -172,7 +184,7 @@ class AppointmentApp:
         time_str = self.time_entry.get()
         patient_name = self.patient_name_entry.get()
         appointment_type = self.appointment_type_entry.get()
-        doctor = self.doctor_entry.get()
+        doctor_name = self.doctor_entry.get()
 
         # Convert date and time from string to appropriate format
         try:
@@ -183,7 +195,7 @@ class AppointmentApp:
             return
 
         # Create the appointment and add it to the schedule
-        appointment = Appointment(None, date, time, patient_name, appointment_type, doctor)
+        appointment = Appointment(None, date, time, patient_name, appointment_type, doctor_name)
         result = self.scheduler.add_appointment(appointment)
         messagebox.showinfo("Appointment", result)
         if result.startswith("Appointment scheduled"):
@@ -203,8 +215,6 @@ class AppointmentApp:
         self.appointment_list_window = tk.Toplevel(self.calendar_window)
         self.appointment_list_window.title("Appointments on " + selected_date)
 
-        self.appointment_widgets = []  # List to store appointment widgets
-
         for appt in appointments:
             appt_label = tk.Label(self.appointment_list_window, text=str(appt))
             appt_label.pack()
@@ -220,9 +230,11 @@ class AppointmentApp:
         self.refresh_appointments_list()  # Refresh the list of appointments
 
     def refresh_appointments_list(self):
-        # Clear existing appointment widgets
-        for widget in self.appointment_widgets:
-            widget.destroy()
+        # Check if there are any widgets to clear
+        if hasattr(self, 'appointment_widgets'):
+            for widget in self.appointment_widgets:
+                widget.destroy()
+            self.appointment_widgets.clear()
 
         # Repopulate the list with updated appointments
         selected_date = self.calendar.get_date()
