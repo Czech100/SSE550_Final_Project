@@ -11,8 +11,8 @@ class Appointment:
     def __str__(self):
         try:
             # Attempt to parse the time string into a datetime.time object
-            formatted_time = datetime.datetime.strptime(self.time, "%H:%M").strftime("%I:%M %p")
+            formatted_time = datetime.datetime.strftime(self.time, "%I:%M %p")
         except (ValueError, TypeError):
             # If parsing fails, use the original time string
             formatted_time = self.time
-        return f"ID: {self.patient_id}, Date: {self.date}, Time: {formatted_time}, Patient: {self.patient_name},Doctor: {self.doctor_name}, Type: {self.appointment_type}"
+        return f"ID: {self.patient_id}, Date: {self.date}, Time: {formatted_time}, Patient: {self.patient_name}, Type: {self.appointment_type},Doctor: {self.doctor_name}"
