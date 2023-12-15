@@ -1,1 +1,2 @@
-[{"patient_id": 1, "date": "2023-12-15", "time": "08:00 AM", "patient_name": "Kaleb", "appointment_type": "Cleaning", "doctor_name": "Bowman"}]
+[{"patient_id": 3, "date": "2023-12-15", "time": "10:00 AM", "patient_name": "Jacob", "appointment_type": "Root Canal", "doctor_name": "Smith"}, 
+{"patient_id": 2, "date": "2023-12-15", "time": "09:00 AM", "patient_name": "John", "appointment_type": "Cleaning", "doctor_name": "Kushinka"}]

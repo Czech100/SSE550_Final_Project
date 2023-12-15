@@ -110,12 +110,14 @@ class AppointmentApp:
             cancel_button.pack()
         
         
+        
 
     def cancel_appointment(self, appointment, window):
         self.scheduler.cancel_appointment(appointment)
         window.destroy()  # Close the cancellation window
         
         # Refresh the calendar view
+        self.update_date_status()
         self.refresh_calendar_availability()
 
 
@@ -191,6 +193,7 @@ class AppointmentApp:
 
 
 
+
     def add_appointment(self):
         # Extract data from the entry fields
         selected_time_str = self.time_var.get()
@@ -223,6 +226,7 @@ class AppointmentApp:
         if result.startswith("Appointment scheduled"):
             self.schedule_window.destroy()
             self.refresh_appointments_list()  # Refresh the list if needed
+            self.update_date_status()
     
     def filter_appointments(self, filter_type, filter_value):
         filtered = []
@@ -261,6 +265,8 @@ class AppointmentApp:
 
         if not appointments:
             tk.Label(appointment_window, text="No appointments for this day.").pack()
+
+        self.update_date_status()
             
 
     def refresh_appointments_list(self):

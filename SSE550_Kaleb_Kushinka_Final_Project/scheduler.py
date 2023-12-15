@@ -4,6 +4,8 @@ from node import Node
 
 class Scheduler:
     def __init__(self, filename='appointments.json'):
+
+        #Encapsulated data
         self.filename = filename
         self.head = None
         self.last_patient_id = 0
