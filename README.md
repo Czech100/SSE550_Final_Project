@@ -9,19 +9,6 @@ in the terminal (command prompt on Windows).
 Step 2: Install Required Packages
 The user needs to install the python packages tkinter, tkcalendar, and pillow:
 1.	Tkinter is a GUI toolkit usually included with Python, so it might not have to be installed. If the GUI toolkit needs to be installed, the user can install it using a packaged manager.
---a.	Windows:
-----i.	On Windows, Tkinter is included with the standard Python installation from python.org. If you've installed Python from there, you should already have Tkinter.
---b.	Linux:
----i.	On Linux, you can install Tkinter using the distribution’s package manager. For example:
-------1.	On Debian/Ubuntu:
---------a.	sudo apt-get install python3-tk
-------2.	On Fedora:
---------a.	sudo dnf install python3-tkinter
-------3.	On CentOS:
---------a.	sudo yum install python3-tkinter
---c.	macOS:
-----i.	On macOS, Tkinter is also included with the standard Python installation from python.org. If you're using Homebrew, it should also include Tkinter when you install Python:
-------1.	brew install python
 2.	PIL(Python Imaging Library)/Pillow: This is used for image processing tasks, like loading and displaying images in your GUI. Pillow is an updated fork of PIL and can be installed via pip:
 a.	pip install pillow
 3.	tkcalendar: This package provides the calendar widget used in your application. You can install it using pip:
