@@ -1,7 +1,6 @@
-
 from gui import run_app
-from appointment import Appointment
 
+#This is used for the main file to run the application
 def main():
     run_app()
 

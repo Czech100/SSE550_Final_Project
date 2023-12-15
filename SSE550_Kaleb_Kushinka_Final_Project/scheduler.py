@@ -3,6 +3,7 @@ from appointment import Appointment
 from node import Node
 
 class Scheduler:
+    #Class to manage appointments
     def __init__(self, filename='appointments.json'):
 
         #Encapsulated data
@@ -15,9 +16,11 @@ class Scheduler:
         self.appointments = []
 
     def load_appointments(self):
+        #File operations: Reading from a JSON file
         try:
             with open(self.filename, 'r') as file:
                 data = json.load(file)
+                #... load data into linked list ...
                 for appt in reversed(data):
                     loaded_appointment = Appointment(appt['patient_id'], appt['date'], appt['time'],
                                                      appt['patient_name'],appt['appointment_type'],appt['doctor_name'])
@@ -28,6 +31,7 @@ class Scheduler:
 
     
     def get_all_appointments(self):
+        #Uses a while loop to get all the scheduled appointments
         current = self.head
         appointments = []
         while current:
@@ -38,7 +42,7 @@ class Scheduler:
 
 
     def save_appointments(self):
-        
+        #saves the appointment by writing the appointment into the JSON file
         current = self.head
         while current:
             self.appointments.append(current.appointment.__dict__)
@@ -47,6 +51,7 @@ class Scheduler:
             json.dump(self.appointments, file, default=str)
 
     def add_appointment(self, appointment, load=False):
+        #Adds appointment to appointment list
         if self.is_conflict(appointment):
             return "Conflict! This time slot is already booked."
         
@@ -65,6 +70,7 @@ class Scheduler:
         return "Appointment scheduled."
 
     def is_conflict(self, new_appointment):
+        #Used to check for appointment conflicts and lets the user know
         current = self.head
         while current:
             appt = current.appointment
@@ -74,6 +80,7 @@ class Scheduler:
         return False
     
     def cancel_appointment(self, appointment_to_cancel):
+        #Used to cancel/remove appointment from the scheduled appointment list
         current = self.head
         previous = None
 
@@ -90,6 +97,7 @@ class Scheduler:
         self.save_appointments()
 
     def filter_appointments(self, filter_type, filter_value):
+        #Used to filter the appointments within the appointment list
         filtered = []
         current = self.head
         while current:

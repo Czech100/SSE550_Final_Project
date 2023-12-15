@@ -3,17 +3,21 @@ from PIL import Image, ImageTk
 from tkinter import  messagebox
 from tkcalendar import Calendar
 import datetime
-from scheduler import Scheduler
+from scheduler import Scheduler #Module import (Modules concept)
 from appointment import Appointment
 
 class AppointmentApp:
+    #Class for the application's GUI (OOP concept)
     def __init__(self, master):
+        # Constructor for initializing the GUI components
         self.master = master
-        self.scheduler = Scheduler()  # Assuming you have a Scheduler class
+        self.scheduler = Scheduler()  # Creating an instance of Scheduler (Object instantiation)
         master.title("Dentist Appointment Scheduler")
 
         # Initialize the appointment_widgets attribute
         self.appointment_widgets = []
+
+        #... other GUI components initialization...
 
         # Welcome message label
         self.welcome_label = tk.Label(master, text="Welcome to the Dental Scheduler", font=("Arial", 16))
@@ -28,22 +32,26 @@ class AppointmentApp:
 
         self.view_calendar_button = tk.Button(master, text="View Calendar", command=self.open_calendar)
         self.view_calendar_button.pack(pady=10)
+        # Event-driven programming: Button click triggers open_calendar method
 
     def generate_timeslots(self):
+        # Method used to generate timeslots for the user to chose from
         start_time = datetime.datetime(2023, 1, 1, 8, 0)  # Using a base date
         end_time = datetime.datetime(2023, 1, 1, 16, 0)  # Up to 4:00 PM
-        timeslots = []
+        timeslots = [] #List data structure
         while start_time < end_time:
             timeslots.append(start_time.strftime("%I:%M %p"))
             start_time += datetime.timedelta(hours=1)
         return timeslots
     
     def get_booked_timeslots(self, date):
+        #This method retireved the already booked timeslots to update the available options on the dropdown menu
         appointments = self.scheduler.filter_appointments('date', date)
         return [appt.time for appt in appointments]  # Directly use the time string
     
     
     def get_date_statuses(self):
+        #This method gets the date statuses of the slected date to inform the user of the availability
         appointments = self.scheduler.get_all_appointments()
         date_counts = {}
         for appt in appointments:
@@ -62,6 +70,7 @@ class AppointmentApp:
     
     
     def open_calendar(self):
+        # Method to open and display the calendar
         self.calendar_window = tk.Toplevel(self.master)
         self.calendar_window.title("View Calendar")
 
@@ -92,6 +101,7 @@ class AppointmentApp:
         self.update_date_status()
 
     def open_appointment_cancellation_window(self):
+        # Method for opening the window to cancel an appointment
         selected_date = self.calendar.get_date()
         formatted_date = datetime.datetime.strptime(selected_date, '%m/%d/%y').strftime('%Y-%m-%d')
         appointments = self.scheduler.filter_appointments('date', formatted_date)
@@ -113,10 +123,11 @@ class AppointmentApp:
         
 
     def cancel_appointment(self, appointment, window):
+        # Method calls upon the 'cancel_appointment'  method from the scheduler class to cancel the appointment selected
         self.scheduler.cancel_appointment(appointment)
         window.destroy()  # Close the cancellation window
         
-        # Refresh the calendar view
+        # Refresh the calendar view and update the date's status
         self.update_date_status()
         self.refresh_calendar_availability()
 
@@ -128,6 +139,7 @@ class AppointmentApp:
         self.open_calendar() 
 
     def update_date_status(self, event=None):
+        #Method to update the status of the date selected
         selected_date = self.calendar.get_date()
         formatted_date = datetime.datetime.strptime(selected_date, '%m/%d/%y').strftime('%Y-%m-%d')
 
@@ -137,6 +149,8 @@ class AppointmentApp:
         self.date_status_label.config(text=f"Status: {status_text}", bg=status_color)
     
     def schedule_appointment_from_calendar(self):
+        #Method allows the user to schedule an appointment from a slected date off the calendar
+        #It does this by loading a new window with a form to fill out.
         selected_date = self.calendar.get_date()
         # Convert the selected_date to a suitable format if necessary
         try:
@@ -202,7 +216,7 @@ class AppointmentApp:
         appointment_type = self.appointment_type_entry.get()
         doctor_name = self.doctor_entry.get()
 
-
+        #Error Handaling of date and time.
         try:
             date = datetime.datetime.strptime(date_str, "%Y-%m-%d").date()
         except ValueError:
@@ -229,6 +243,7 @@ class AppointmentApp:
             self.update_date_status()
     
     def filter_appointments(self, filter_type, filter_value):
+        #This method helps filter the appointments for viewing purposes
         filtered = []
         current = self.head
         while current:
@@ -243,6 +258,7 @@ class AppointmentApp:
         return filtered
 
     def view_appointments_on_date(self):
+        #This method allows the user to view the appoinments schedueled on the slected date
         selected_date = self.calendar.get_date()
         formatted_date = datetime.datetime.strptime(selected_date, '%m/%d/%y').strftime('%Y-%m-%d')
         appointments = self.scheduler.filter_appointments('date', formatted_date)
@@ -290,6 +306,7 @@ class AppointmentApp:
             cancel_button.pack()
             self.appointment_widgets.append(cancel_button)
 def run_app():
+    #Runs the application
     root = tk.Tk()
     app = AppointmentApp(root)
     root.mainloop()
