@@ -1,4 +1,3 @@
-# SSE550_Final_Project
 # Getting Started
 # Step 1: Ensure Python is Installed
 Make sure Python is installed on the system. You can verify this by running:
